@@ -5,13 +5,21 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.MainFragment">
+    tools:context=".ui.main.MainFragment"
+    android:background="#14131E">
 
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
+    <nay.lib.Tachometer
+        android:id="@+id/tachometer"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="MainFragment"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        app:max="100"
+        app:borderSize="8dp"
+        app:borderColor="#402c47"
+        app:fillColor="@color/design_default_color_secondary"
+        app:textColor="@color/design_default_color_secondary"
+        app:valueTextSize="50sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,8 +1,15 @@
 package nay.tachometer.ui.main
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class MainViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+    fun startMeter(): Flow<Int> = flow {
+        while (true) {
+            emit((0..100).random())
+            delay(1000)
+        }
+    }
 }
