@@ -6,6 +6,7 @@
         <attr name="min" format="integer" />
         <attr name="borderSize" format="dimension" />
         <attr name="valueTextSize" format="dimension" />
+        <attr name="metricTextSize" format="dimension" />
         <attr name="textGap" format="dimension" />
         <attr name="metricText" format="string" />
 

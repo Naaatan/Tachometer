@@ -51,6 +51,9 @@ class Tachometer @JvmOverloads constructor(
     @Dimension
     private var mValueTextSize = 260f
 
+    @Dimension
+    private var mMetricTextSize = 50f
+
     @ColorInt
     private var mBorderColor = Color.parseColor("#402c47")
 
@@ -158,6 +161,13 @@ class Tachometer @JvmOverloads constructor(
             invalidate()
         }
 
+    var metricTextSize: Float
+        @Dimension get() = mMetricTextSize
+        set(@Dimension value) {
+            paintMetric.textSize = value
+            invalidate()
+        }
+
     ///////////////////////////////////////////////////////////////////////////
     // Paints
     ///////////////////////////////////////////////////////////////////////////
@@ -219,7 +229,7 @@ class Tachometer @JvmOverloads constructor(
         isAntiAlias = true
         style = Paint.Style.FILL
         color = textColor
-        textSize = 50f
+        textSize = metricTextSize
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -279,6 +289,10 @@ class Tachometer @JvmOverloads constructor(
                 valueTextSize = getDimension(
                     R.styleable.Tachometer_valueTextSize,
                     valueTextSize
+                )
+                metricTextSize = getDimension(
+                    R.styleable.Tachometer_metricTextSize,
+                    metricTextSize
                 )
                 textGap = getDimension(
                     R.styleable.Tachometer_textGap,

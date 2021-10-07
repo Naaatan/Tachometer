@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="nay.tachometer.ui.main.MainViewModel" />
@@ -13,8 +14,8 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.main.MainFragment"
-        android:background="#14131E">
+        android:background="#14131E"
+        tools:context=".ui.main.MainFragment">
 
         <nay.lib.Tachometer
             android:id="@+id/tachometer"
@@ -22,20 +23,21 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="48dp"
             android:layout_marginEnd="48dp"
-            app:max="@{viewModel.max}"
-            app:min="@{viewModel.min}"
-            app:value="@{viewModel.meterValue}"
-            app:borderSize="8dp"
-            app:borderColor="#402c47"
-            app:fillColor="#03cad6"
-            app:textColor="#03cad6"
-            app:valueTextSize="60sp"
-            app:textGap="24dp"
-            app:metricText="km/h"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:value="@{viewModel.meterValue}"
+            app:max="@{viewModel.max}"
+            app:min="@{viewModel.min}"
+            app:borderSize="8dp"
+            app:borderColor="#402c47"
+            app:fillColor="#03cad6"
+            app:metricText="km/h"
+            app:metricTextSize="20sp"
+            app:valueTextSize="60sp"
+            app:textColor="#03cad6"
+            app:textGap="24dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
