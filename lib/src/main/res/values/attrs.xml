@@ -13,6 +13,9 @@
         <attr name="borderColor" format="color" />
         <attr name="fillColor" format="color" />
         <attr name="textColor" format="color" />
+        <attr name="textUnderColor" format="color" />
+        <attr name="textOverColor" format="color" />
+
     </declare-styleable>
 
 </resources>

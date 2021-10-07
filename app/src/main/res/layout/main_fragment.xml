@@ -37,7 +37,9 @@
             app:metricTextSize="20sp"
             app:valueTextSize="60sp"
             app:textColor="#03cad6"
-            app:textGap="24dp" />
+            app:textGap="24dp"
+            app:textOverColor="#F44336"
+            app:textUnderColor="#2196F3"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

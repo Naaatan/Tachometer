@@ -63,6 +63,12 @@ class Tachometer @JvmOverloads constructor(
     @ColorInt
     private var mTextColor = Color.parseColor("#f5f5f5")
 
+    @ColorInt
+    var textUnderColor: Int = Color.parseColor("#f5f5f5")
+
+    @ColorInt
+    var textOverColor: Int = Color.parseColor("#f5f5f5")
+
     private var mMetricText = "km/h"
 
     ///////////////////////////////////////////////////////////////////////////
@@ -313,6 +319,14 @@ class Tachometer @JvmOverloads constructor(
                     R.styleable.Tachometer_textColor,
                     borderColor
                 )
+                textUnderColor = getColor(
+                    R.styleable.Tachometer_textUnderColor,
+                    textColor
+                )
+                textOverColor = getColor(
+                    R.styleable.Tachometer_textOverColor,
+                    textColor
+                )
             }
         } catch (e: Exception) {
             // ignored
@@ -401,11 +415,19 @@ class Tachometer @JvmOverloads constructor(
     }
 
     private fun renderMeterValueAndMetricText(canvas: Canvas) {
+        val textColor = when {
+            value > max -> textOverColor
+            value < min -> textUnderColor
+            else -> textColor
+        }
+
         canvas.drawTextCentred(
             value.toString(),
             width / 2f,
             height / 2f,
-            paintMeterValue
+            paintMeterValue.apply {
+                color = textColor
+            }
         )
         canvas.drawTextCentred(
             metricText,
