@@ -5,4 +5,4 @@ Indicator like tachometer View Library for Android
 
 Sample Preview
 
-<img src="https://github.com/Naaatan/Tachometer/blob/master/image/demo.gif" />
+<img src="https://github.com/Naaatan/Tachometer/blob/master/image/demo.gif" width="480"/>
