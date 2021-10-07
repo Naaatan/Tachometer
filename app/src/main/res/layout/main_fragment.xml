@@ -31,7 +31,7 @@
             app:max="@{viewModel.max}"
             app:min="@{viewModel.min}"
             app:borderSize="8dp"
-            app:borderColor="#402c47"
+            app:borderColor="#4B3453"
             app:fillColor="#03cad6"
             app:metricText="km/h"
             app:metricTextSize="20sp"
@@ -39,9 +39,9 @@
             app:textColor="#03cad6"
             app:textGap="24dp"
             app:textOverColor="#F44336"
-            app:textUnderColor="#2196F3"
+            app:textUnderColor="#03A9F4"
             app:tick_split_major="7"
-            app:tick_split_minor="4"/>
+            app:tick_split_minor="5"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
