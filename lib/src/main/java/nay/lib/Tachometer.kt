@@ -9,10 +9,26 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
 import androidx.core.animation.doOnEnd
+import androidx.databinding.BindingMethod
+import androidx.databinding.BindingMethods
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
+@BindingMethods(
+    value = [
+        BindingMethod(
+            type = Tachometer::class,
+            method = "setMax",
+            attribute = "max"
+        ),
+        BindingMethod(
+            type = Tachometer::class,
+            method = "setMin",
+            attribute = "min"
+        )
+    ]
+)
 class Tachometer @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
