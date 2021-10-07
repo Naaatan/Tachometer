@@ -252,6 +252,10 @@ class Tachometer @JvmOverloads constructor(
                     R.styleable.Tachometer_max,
                     max
                 )
+                min = getInt(
+                    R.styleable.Tachometer_min,
+                    min
+                )
                 borderSize = getDimension(
                     R.styleable.Tachometer_borderSize,
                     borderSize
@@ -288,44 +292,46 @@ class Tachometer @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        renderMajorTicks(canvas)
-        renderMinorTicks(canvas)
+        renderTicks(canvas, getTicksValue(min, max))
         renderBorder(canvas)
         renderBorderFill(canvas)
         renderTickBorder(canvas)
         renderMeterValueAndMetricText(canvas)
     }
 
-    private fun renderMinorTicks(canvas: Canvas) {
-        for (s in MIN_VALUE..max step 2) {
-            if (s % 10 != 0) {
-                canvas.drawLine(
-                    centerX + (centerX - borderSize - MINOR_TICK_SIZE) * cos(mapMeterValueToAngle(s).toRadian()),
-                    centerY - (centerY - borderSize - MINOR_TICK_SIZE) * sin(mapMeterValueToAngle(s).toRadian()),
-                    centerX + (centerX - borderSize - TICK_MARGIN) * cos(mapMeterValueToAngle(s).toRadian()),
-                    centerY - (centerY - borderSize - TICK_MARGIN) * sin(mapMeterValueToAngle(s).toRadian()),
-                    paintMinorTick
-                )
+    private fun renderTicks(canvas: Canvas, ticks: List<Tick<Int>>) {
+        for (tick in ticks) {
+            when (tick) {
+                is Tick.Major -> renderMajorTick(canvas, tick.value)
+                is Tick.Minor -> renderMinorTick(canvas, tick.value)
             }
         }
     }
 
-    private fun renderMajorTicks(canvas: Canvas) {
-        for (s in MIN_VALUE..max step 10) {
-            canvas.drawLine(
-                centerX + (centerX - borderSize - MAJOR_TICK_SIZE) * cos(mapMeterValueToAngle(s).toRadian()),
-                centerY - (centerY - borderSize - MAJOR_TICK_SIZE) * sin(mapMeterValueToAngle(s).toRadian()),
-                centerX + (centerX - borderSize - TICK_MARGIN) * cos(mapMeterValueToAngle(s).toRadian()),
-                centerY - (centerY - borderSize - TICK_MARGIN) * sin(mapMeterValueToAngle(s).toRadian()),
-                paintMajorTick
-            )
-            canvas.drawTextCentred(
-                s.toString(),
-                centerX + (centerX - borderSize - MAJOR_TICK_SIZE - TICK_MARGIN - TICK_TEXT_MARGIN) * cos(mapMeterValueToAngle(s).toRadian()),
-                centerY - (centerY - borderSize - MAJOR_TICK_SIZE - TICK_MARGIN - TICK_TEXT_MARGIN) * sin(mapMeterValueToAngle(s).toRadian()),
-                paintTickText
-            )
-        }
+    private fun renderMinorTick(canvas: Canvas, v: Int) {
+        canvas.drawLine(
+            centerX + (centerX - borderSize - MINOR_TICK_SIZE) * cos(mapMeterValueToAngle(v).toRadian()),
+            centerY - (centerY - borderSize - MINOR_TICK_SIZE) * sin(mapMeterValueToAngle(v).toRadian()),
+            centerX + (centerX - borderSize - TICK_MARGIN) * cos(mapMeterValueToAngle(v).toRadian()),
+            centerY - (centerY - borderSize - TICK_MARGIN) * sin(mapMeterValueToAngle(v).toRadian()),
+            paintMinorTick
+        )
+    }
+
+    private fun renderMajorTick(canvas: Canvas, v: Int) {
+        canvas.drawLine(
+            centerX + (centerX - borderSize - MAJOR_TICK_SIZE) * cos(mapMeterValueToAngle(v).toRadian()),
+            centerY - (centerY - borderSize - MAJOR_TICK_SIZE) * sin(mapMeterValueToAngle(v).toRadian()),
+            centerX + (centerX - borderSize - TICK_MARGIN) * cos(mapMeterValueToAngle(v).toRadian()),
+            centerY - (centerY - borderSize - TICK_MARGIN) * sin(mapMeterValueToAngle(v).toRadian()),
+            paintMajorTick
+        )
+        canvas.drawTextCentred(
+            v.toString(),
+            centerX + (centerX - borderSize - MAJOR_TICK_SIZE - TICK_MARGIN - TICK_TEXT_MARGIN) * cos(mapMeterValueToAngle(v).toRadian()),
+            centerY - (centerY - borderSize - MAJOR_TICK_SIZE - TICK_MARGIN - TICK_TEXT_MARGIN) * sin(mapMeterValueToAngle(v).toRadian()),
+            paintTickText
+        )
     }
 
     private fun renderBorder(canvas: Canvas) {
@@ -349,10 +355,16 @@ class Tachometer @JvmOverloads constructor(
     }
 
     private fun renderBorderFill(canvas: Canvas) {
+        val sweepAngle = when {
+            value >= max -> SWEEP_ANGLE
+            value <= min -> 0f
+            else -> MIN_ANGLE - angle
+        }
+
         canvas.drawArc(
             indicatorBorderRect,
             START_ANGLE,
-            MIN_ANGLE - angle,
+            sweepAngle,
             false,
             paintIndicatorFill
         )
@@ -374,16 +386,16 @@ class Tachometer @JvmOverloads constructor(
     }
 
     private fun mapMeterValueToAngle(value: Int): Float {
-        return (MIN_ANGLE + ((MAX_ANGLE - MIN_ANGLE) / (max - MIN_VALUE)) * (value - MIN_VALUE))
+        return (MIN_ANGLE + ((MAX_ANGLE - MIN_ANGLE) / (max - min)) * (value - min))
     }
 
     private fun mapAngleToMeterValue(angle: Float): Int {
-        return (MIN_VALUE + ((max - MIN_VALUE) / (MAX_ANGLE - MIN_ANGLE)) * (angle - MIN_ANGLE)).toInt()
+        return (min + ((max - min) / (MAX_ANGLE - MIN_ANGLE)) * (angle - MIN_ANGLE)).toInt()
     }
 
-    fun setMeterValue(s: Int, d: Long, onEnd: (() -> Unit)? = null) {
+    fun setMeterValue(v: Int, d: Long, onEnd: (() -> Unit)? = null) {
         animator.apply {
-            setFloatValues(mapMeterValueToAngle(value), mapMeterValueToAngle(s))
+            setFloatValues(mapMeterValueToAngle(value), mapMeterValueToAngle(v))
 
             addUpdateListener {
                 angle = it.animatedValue as Float
@@ -403,22 +415,77 @@ class Tachometer @JvmOverloads constructor(
         drawText(text, cx - textBounds.exactCenterX(), cy - textBounds.exactCenterY(), paint)
     }
 
+    /**
+     * Angle to Radian
+     */
     private fun Float.toRadian(): Float {
         return this * (PI / 180).toFloat()
     }
 
+    /**
+     * Get tickValue list
+     */
+    private fun getTicksValue(min: Int, max: Int): List<Tick<Int>> {
+        val range = min..max
+        val majorStep = (max - min) / DEFAULT_MAJOR_TICKS_SPLIT
+        val minorStep = majorStep / DEFAULT_MINOR_TICKS_SPLIT
+        val ticks = mutableListOf<Tick<Int>>(Tick.Major(min), Tick.Major(max))
+        var (majorSeek, minorSeek) = 0 to 0
+
+        for (v in range) {
+            if (majorSeek == majorStep) {
+                if ((range.last - v) >= majorStep) {
+                    ticks.add(Tick.Major(v))
+                }
+                majorSeek = 1
+                minorSeek = 1
+                continue
+            } else majorSeek++
+
+            if (minorSeek == minorStep) {
+                if ((range.last - v) >= minorStep) {
+                    ticks.add(Tick.Minor(v))
+                }
+                minorSeek = 1
+            } else minorSeek++
+        }
+
+        return ticks.sortedBy {
+            when (it) {
+                is Tick.Major -> it.value
+                is Tick.Minor -> it.value
+            }
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Binding Adapter Methods
+    ///////////////////////////////////////////////////////////////////////////
+    fun setMax(max: Int?) {
+        this.max = max ?: return
+    }
+
+    fun setMin(min: Int?) {
+        this.min = min ?: return
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Companion
+    ///////////////////////////////////////////////////////////////////////////
     companion object {
         private const val MIN_ANGLE = 220f
         private const val MAX_ANGLE = -40f
         private const val START_ANGLE = 140f
         private const val SWEEP_ANGLE = 260f
 
-        private const val MIN_VALUE = 0
         private const val TICK_MARGIN = 10f
         private const val TICK_TEXT_MARGIN = 30f
         private const val MAJOR_TICK_SIZE = 50f
         private const val MINOR_TICK_SIZE = 25f
         private const val MAJOR_TICK_WIDTH = 4f
         private const val MINOR_TICK_WIDTH = 2f
+
+        private const val DEFAULT_MAJOR_TICKS_SPLIT = 10
+        private const val DEFAULT_MINOR_TICKS_SPLIT = 4
     }
 }
