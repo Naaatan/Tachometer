@@ -1,4 +1,6 @@
 # Tachometer Android
+[![](https://jitpack.io/v/Naaatan/Tachometer.svg)](https://jitpack.io/#Naaatan/Tachometer)
+
 Indicator like tachometer View Library for Android
 
 ## GIF
