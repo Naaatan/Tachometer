@@ -6,9 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import nay.tachometer.databinding.MainFragmentBinding
 
 class MainFragment : Fragment() {
@@ -24,10 +21,17 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = MainFragmentBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.startMeter().onEach {
-            binding.tachometer.setMeterValue(s = it, d = 1000L)
+        /*
+        // ViewBinding Code
+        viewModel.meterValue.onEach {
+            binding.tachometer.setMeterValue(it, 1000L) {
+                // called when the animation ends
+            }
         }.launchIn(lifecycleScope)
+        */
 
         return binding.root
     }
