@@ -23,7 +23,7 @@ allprojects {
 Step 2. Add dependency to your app **build.gradle**
 ```groovy
 dependencies {
-    implementation 'com.github.Naaatan:Tachometer:1.0'
+    implementation 'com.github.Naaatan:Tachometer:1.0.2'
 }
 ```
 
