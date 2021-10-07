@@ -16,6 +16,9 @@
         <attr name="textUnderColor" format="color" />
         <attr name="textOverColor" format="color" />
 
+        <attr name="tick_split_major" format="integer" />
+        <attr name="tick_split_minor" format="integer" />
+
     </declare-styleable>
 
 </resources>

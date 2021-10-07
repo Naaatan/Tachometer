@@ -39,7 +39,9 @@
             app:textColor="#03cad6"
             app:textGap="24dp"
             app:textOverColor="#F44336"
-            app:textUnderColor="#2196F3"/>
+            app:textUnderColor="#2196F3"
+            app:tick_split_major="7"
+            app:tick_split_minor="4"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

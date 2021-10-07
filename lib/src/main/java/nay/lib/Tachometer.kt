@@ -71,6 +71,10 @@ class Tachometer @JvmOverloads constructor(
 
     private var mMetricText = "km/h"
 
+    private var mTickSplitMajor = DEFAULT_MAJOR_TICKS_SPLIT
+
+    private var mTickSplitMinor = DEFAULT_MINOR_TICKS_SPLIT
+
     ///////////////////////////////////////////////////////////////////////////
     // Dynamic Values
     ///////////////////////////////////////////////////////////////////////////
@@ -171,6 +175,20 @@ class Tachometer @JvmOverloads constructor(
         @Dimension get() = mMetricTextSize
         set(@Dimension value) {
             paintMetric.textSize = value
+            invalidate()
+        }
+
+    var tickSplitMajor: Int
+        get() = mTickSplitMajor
+        set(value) {
+            mTickSplitMajor = value
+            invalidate()
+        }
+
+    var tickSplitMinor: Int
+        get() = mTickSplitMinor
+        set(value) {
+            mTickSplitMinor = value
             invalidate()
         }
 
@@ -327,6 +345,14 @@ class Tachometer @JvmOverloads constructor(
                     R.styleable.Tachometer_textOverColor,
                     textColor
                 )
+                tickSplitMajor = getInt(
+                    R.styleable.Tachometer_tick_split_major,
+                    tickSplitMajor
+                )
+                tickSplitMinor = getInt(
+                    R.styleable.Tachometer_tick_split_minor,
+                    tickSplitMinor
+                )
             }
         } catch (e: Exception) {
             // ignored
@@ -479,8 +505,8 @@ class Tachometer @JvmOverloads constructor(
      */
     private fun getTicksValue(min: Int, max: Int): List<Tick<Int>> {
         val range = min..max
-        val majorStep = (max - min) / DEFAULT_MAJOR_TICKS_SPLIT
-        val minorStep = majorStep / DEFAULT_MINOR_TICKS_SPLIT
+        val majorStep = (max - min) / tickSplitMajor
+        val minorStep = majorStep / tickSplitMinor
         val ticks = mutableListOf<Tick<Int>>(Tick.Major(min), Tick.Major(max))
         var (majorSeek, minorSeek) = 0 to 0
 
