@@ -284,6 +284,12 @@ class Tachometer @JvmOverloads constructor(
         )
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Formatter
+    ///////////////////////////////////////////////////////////////////////////
+    private var valueFormatter: TachometerValueFormatter? = null
+
+
     init {
         obtainStyledAttributes(attrs, defStyleAttr)
     }
@@ -397,7 +403,7 @@ class Tachometer @JvmOverloads constructor(
             paintMajorTick
         )
         canvas.drawTextCentred(
-            v.toString(),
+            valueFormatter?.onValue(v) ?: v.toString(),
             centerX + (centerX - borderSize - MAJOR_TICK_SIZE - TICK_MARGIN - TICK_TEXT_MARGIN) * cos(mapMeterValueToAngle(v).toRadian()),
             centerY - (centerY - borderSize - MAJOR_TICK_SIZE - TICK_MARGIN - TICK_TEXT_MARGIN) * sin(mapMeterValueToAngle(v).toRadian()),
             paintTickText
@@ -448,7 +454,7 @@ class Tachometer @JvmOverloads constructor(
         }
 
         canvas.drawTextCentred(
-            value.toString(),
+            valueFormatter?.onValue(value) ?: value.toString(),
             width / 2f,
             height / 2f,
             paintMeterValue.apply {
@@ -537,7 +543,7 @@ class Tachometer @JvmOverloads constructor(
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Binding Adapter Methods
+    // Binding Methods
     ///////////////////////////////////////////////////////////////////////////
     fun setMax(max: Int?) {
         this.max = max ?: return
@@ -545,6 +551,26 @@ class Tachometer @JvmOverloads constructor(
 
     fun setMin(min: Int?) {
         this.min = min ?: return
+    }
+
+    fun setValueFormatter(formatter: TachometerValueFormatter?) {
+        this.valueFormatter = formatter
+    }
+
+    fun setValueFormatter(format: (value: Int) -> String) {
+        val formatter = Runner(format)
+        this.valueFormatter = object : TachometerValueFormatter {
+            override fun onValue(value: Int): String {
+                return formatter.run(value)
+            }
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Runner
+    ///////////////////////////////////////////////////////////////////////////
+    private inner class Runner<T, R>(private val runner: (value: T) -> R) {
+        fun run(value: T) = runner.invoke(value)
     }
 
     ///////////////////////////////////////////////////////////////////////////
