@@ -25,7 +25,7 @@ allprojects {
 Step 2. Add dependency to your app **build.gradle**
 ```groovy
 dependencies {
-    implementation 'com.github.Naaatan:Tachometer:1.0.2'
+    implementation 'com.github.Naaatan:Tachometer:1.1.0'
 }
 ```
 
@@ -61,5 +61,12 @@ tachometer.setMeterValue(v = value, d = 1000L) {
 }
 ```
 
-### Example
+### Value Formatter
+```kotlin
+tachometer.setValueFormatter { value ->
+    value.toString(radix = 16)
+}
+```
+
+## Example
 Look at the [sample code](https://github.com/Naaatan/Tachometer/tree/master/app)
